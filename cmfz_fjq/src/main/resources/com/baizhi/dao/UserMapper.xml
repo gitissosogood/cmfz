@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.baizhi.dao.UserDao">
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user (phone, password, salt)
+        values (#{phone}, #{password}, #{salt})
+    </insert>
+
+    <select id="count" resultType="int">
+        select count(*)
+        from t_user
+        where datediff(now(), create_date) &lt; #{i}
+    </select>
+
+    <select id="scatter" resultType="UserScatter">
+        select count(*) value,province name
+        from t_user
+        where sex=#{i}
+        group by province
+    </select>
+
+</mapper>

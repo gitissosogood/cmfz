@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.baizhi.dao.ArticleDao">
+
+    <resultMap id="articleResultMap" type="Article">
+        <result column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="img_path" property="imgPath"/>
+        <result column="publish_date" property="publishDate"/>
+        <result column="status" property="status"/>
+        <association property="master" javaType="Master">
+            <result column="master_id" property="id"/>
+            <result column="dhama" property="dhama"/>
+            <result column="head_img" property="headImg"/>
+        </association>
+    </resultMap>
+
+    <select id="selectByMaster" resultMap="articleResultMap">
+        SELECT t1.*,t2.dhama,t2.head_img
+        FROM t_article t1
+                 LEFT JOIN t_master t2
+                           ON t1.master_id = t2.id
+        WHERE master_id = (SELECT master_id FROM t_user WHERE id = #{uid})
+        ORDER BY publish_date LIMIT 2
+    </select>
+
+    <select id="selectAllByMaster" resultMap="articleResultMap">
+        SELECT t1.*,t2.dhama,t2.head_img
+        FROM t_article t1
+                 LEFT JOIN t_master t2
+                           ON t1.master_id = t2.id
+        WHERE master_id = (SELECT master_id FROM t_user WHERE id = #{uid})
+    </select>
+
+    <select id="selectAllByOthers" resultMap="articleResultMap">
+        SELECT t1.*,t2.dhama,t2.head_img
+        FROM t_article t1
+                 LEFT JOIN t_master t2
+                           ON t1.master_id = t2.id
+        WHERE master_id != (SELECT master_id FROM t_user WHERE id = #{uid})
+    </select>
+
+</mapper>
